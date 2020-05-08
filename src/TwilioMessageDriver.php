@@ -80,7 +80,7 @@ class TwilioMessageDriver extends TwilioDriver
         if ($message instanceof Question) {
             $text = $message->getText();
             $parameters['buttons'] = $message->getButtons() ?? [];
-        } elseif ($message instanceof Twiml) {
+        } elseif ($message instanceof Twiml\MessagingResponse) {
             $parameters['twiml'] = $message;
         } elseif ($message instanceof OutgoingMessage) {
             $attachment = $message->getAttachment();
@@ -100,7 +100,8 @@ class TwilioMessageDriver extends TwilioDriver
     /**
      * @param mixed $payload
      * @return Response
-     * @throws \Twilio\Rest\Api\V2010\Account\TwilioException
+     * @throws \Twilio\Exceptions\ConfigurationException
+     * @throws \Twilio\Exceptions\TwilioException
      */
     public function sendPayload($payload)
     {
@@ -127,15 +128,17 @@ class TwilioMessageDriver extends TwilioDriver
             return Response::create(json_encode($message->toArray()));
         }
 
-        $response = new Twiml();
-        $message = $response->message();
+        $response = new Twiml\MessagingResponse();
+
 
         $body = $payload['text'];
 
         foreach ((array) $payload['buttons'] as $button) {
             $body .= "\n".$button['text'];
         }
-        $message->body($body);
+
+        $message = $response->message($body);
+
         if (isset($payload['media'])) {
             $message->media($payload['media']);
         }

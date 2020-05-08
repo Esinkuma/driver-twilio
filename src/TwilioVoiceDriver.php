@@ -85,7 +85,7 @@ class TwilioVoiceDriver extends TwilioDriver
             $text = $message->getText();
             $isQuestion = true;
             $parameters['buttons'] = $message->getButtons() ?? [];
-        } elseif ($message instanceof Twiml) {
+        } elseif ($message instanceof Twiml\VoiceResponse) {
             $parameters['twiml'] = $message;
         } elseif ($message instanceof OutgoingMessage) {
             $text = $message->getText();
@@ -120,7 +120,7 @@ class TwilioVoiceDriver extends TwilioDriver
             $sayParameters['language'] = $payload['language'];
         }
 
-        $response = new Twiml();
+        $response = new Twiml\VoiceResponse();
         if ($payload['question'] === true) {
             $input = $payload['input'] ?? $this->config->get('input', TwilioSettings::INPUT_DTMF);
             $gather = $response->gather(['input' => $input]);
