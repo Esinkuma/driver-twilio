@@ -2,7 +2,7 @@
 
 namespace BotMan\Drivers\Twilio;
 
-use Twilio\Twiml;
+use Twilio\TwiML;
 use Twilio\Rest\Client as Twilio;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
@@ -80,7 +80,7 @@ class TwilioMessageDriver extends TwilioDriver
         if ($message instanceof Question) {
             $text = $message->getText();
             $parameters['buttons'] = $message->getButtons() ?? [];
-        } elseif ($message instanceof Twiml\MessagingResponse) {
+        } elseif ($message instanceof TwiML\MessagingResponse) {
             $parameters['twiml'] = $message;
         } elseif ($message instanceof OutgoingMessage) {
             $attachment = $message->getAttachment();
@@ -128,7 +128,7 @@ class TwilioMessageDriver extends TwilioDriver
             return Response::create(json_encode($message->toArray()));
         }
 
-        $response = new Twiml\MessagingResponse();
+        $response = new TwiML\MessagingResponse();
 
 
         $body = $payload['text'];
